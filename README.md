@@ -1,4 +1,4 @@
-# Blackrose AI Arena
+# Alpha Premier League
 
 A full-stack trading platform with AI model management capabilities, featuring real-time data streaming, WebSocket communication, and integration with trading exchanges (Zerodha and Delta Exchange).
 
