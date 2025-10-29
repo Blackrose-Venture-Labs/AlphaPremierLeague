@@ -267,40 +267,6 @@ npm run deploy
 4. Push to the branch: `git push origin feature/your-feature`
 5. Submit a pull request
 
-## 📝 License
-
-[Add your license information here]
-
-## 👥 Team
-
-[Add team information here]
-
-## 📧 Contact
-
-[Add contact information here]
-
-## 🐛 Known Issues
-
-- Check GitHub Issues for current bugs and feature requests
-- Report new issues with detailed reproduction steps
-
-## 🗺️ Roadmap
-
-- [ ] Add unit and integration tests
-- [ ] Implement user authentication and authorization
-- [ ] Add more trading strategies
-- [ ] Expand AI model capabilities
-- [ ] Mobile app development
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support
-
-## 💡 Acknowledgments
-
-- FastAPI for the excellent Python framework
-- React and the React community
-- Radix UI for accessible components
-- All contributors and supporters
-
 ---
 
 **Note**: This project is under active development. Features and documentation may change.
