@@ -1,0 +1,13 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+sqlalchemy>=2.0.36
+asyncpg>=0.30.0
+alembic>=1.13.0
+pydantic>=2.10.0
+pydantic[email]>=2.10.0
+python-dotenv==1.0.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+websockets>=12.0
+pytz>=2023.3
+direct_redis
