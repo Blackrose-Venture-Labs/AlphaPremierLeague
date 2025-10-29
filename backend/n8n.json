@@ -1,0 +1,1756 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpha-arena",
+        "authentication": "basicAuth",
+        "options": {
+          "ipWhitelist": ""
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1056,
+        -64
+      ],
+      "id": "27c647a2-901f-4001-8b4b-8202176fbd04",
+      "name": "Webhook",
+      "webhookId": "462300ad-ca46-488d-9c43-885bcd9955a6",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "QgFA0MmOAoeZB7Za",
+          "name": "sex"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nout = []\nfor key, value in _input.first().json.body.mapping.items():\n  out.append({\"instrument_token\": key, \"symbol\": value})\n\nreturn out"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -832,
+        -64
+      ],
+      "id": "b9991002-364c-49fb-841a-726cad13f706",
+      "name": "Code in Python (Beta)"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        48,
+        -96
+      ],
+      "id": "3c1294cd-216c-4483-9167-33a7045e2d2b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04cc8fd2-64cd-4fef-b08c-f5cf5ba93ea6",
+              "name": "data.candles",
+              "value": "={{ $json.data.candles }}",
+              "type": "array"
+            },
+            {
+              "id": "45a0b3d4-4a90-4f31-8ee2-af314a96b858",
+              "name": "instrument_token",
+              "value": "={{ $('Code in Python (Beta)').item.json.instrument_token }}",
+              "type": "string"
+            },
+            {
+              "id": "6cb87c73-0632-4924-aea4-bc8ed34f8576",
+              "name": "symbol",
+              "value": "={{ $('Code in Python (Beta)').item.json.symbol }}",
+              "type": "string"
+            },
+            {
+              "id": "2bbc813d-eaa0-41bc-bf3b-af7d84532cf4",
+              "name": "timeframe",
+              "value": "15minutes",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -384,
+        -352
+      ],
+      "id": "fa9e3a6c-b1c0-45d0-9f78-78bbe22a7129",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04cc8fd2-64cd-4fef-b08c-f5cf5ba93ea6",
+              "name": "data.candles",
+              "value": "={{ $json.data.candles }}",
+              "type": "array"
+            },
+            {
+              "id": "45a0b3d4-4a90-4f31-8ee2-af314a96b858",
+              "name": "instrument_token",
+              "value": "={{ $('Code in Python (Beta)').item.json.instrument_token }}",
+              "type": "string"
+            },
+            {
+              "id": "6cb87c73-0632-4924-aea4-bc8ed34f8576",
+              "name": "symbol",
+              "value": "={{ $('Code in Python (Beta)').item.json.symbol }}",
+              "type": "string"
+            },
+            {
+              "id": "26bd70d2-99c1-44a9-8d92-9be755029b01",
+              "name": "timeframe",
+              "value": "60minutes",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -384,
+        -160
+      ],
+      "id": "eb1eda90-42f8-4f59-b4d8-9e71991daaf5",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.ai_model }}",
+                    "rightValue": "chatgpt_5",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0bc9ffd9-fe1a-45e9-bc32-9e53c84c2c33"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "openai"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "48b96da4-1d61-4070-8961-f55d5b748229",
+                    "leftValue": "={{ $('Webhook').item.json.body.ai_model }}",
+                    "rightValue": "deepseek_v3.1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "deepseek"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "90c1bfdc-9cc4-4a36-8245-d9ce886bcaed",
+                    "leftValue": "={{ $('Webhook').item.json.body.ai_model }}",
+                    "rightValue": "claude_v4.5",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "claude"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "af4044c4-0570-4531-8d72-9f5ed9d4d970",
+                    "leftValue": "={{ $('Webhook').item.json.body.ai_model }}",
+                    "rightValue": "grok_4",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "grok"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1b539535-5b8f-4c8a-a5d0-f83896e66792",
+                    "leftValue": "={{ $('Webhook').item.json.body.ai_model }}",
+                    "rightValue": "qwen_3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "qwen"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1616,
+        -112
+      ],
+      "id": "dcf474d0-3708-454a-9fb2-6b868360aec2",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-5",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        -944
+      ],
+      "id": "3d9a4a4f-5216-4548-84b4-4be99237c53e",
+      "name": "OpenAI",
+      "credentials": {
+        "openRouterApi": {
+          "id": "v5VebqRmrUGONAzB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        272,
+        -64
+      ],
+      "id": "370971a7-4678-4290-ba50-8cdacc1b107d",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.alphaarena.in/api/v1/models/create_model_chat",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "code_name",
+              "value": "={{ $('Webhook').item.json.body.ai_model }}"
+            },
+            {
+              "name": "model_input_prompt",
+              "value": "={{ $('PreprocessedDataLLM').item.json.output }}"
+            },
+            {
+              "name": "model_output_prompt",
+              "value": "={{ $json.output.toJsonString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2560,
+        -112
+      ],
+      "id": "799b2efc-a2b0-4cec-9156-4c214fdb62eb",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "41e24524-c0a6-4b84-b867-a5456ce6fefd",
+              "leftValue": "={{ $('Edit Fields').item.json.output.parseJson().output.rebalancing_decision }}",
+              "rightValue": "REBALANCE",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2784,
+        -112
+      ],
+      "id": "31e63310-3e71-4051-a32c-f5629c74e411",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "model_output_prompt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        3232,
+        -112
+      ],
+      "id": "2f35568e-15d3-4356-8039-63220dd79b9d",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3456,
+        -112
+      ],
+      "id": "df46b96a-1c8a-484b-ad4f-188376da35c6",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        -208
+      ],
+      "id": "d5517f25-3812-4728-9fd2-b619e9f6f934",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat-v3.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        -336
+      ],
+      "id": "9ad11d21-8ee5-409f-85ab-f6bd32559dbd",
+      "name": "deepseek",
+      "credentials": {
+        "openRouterApi": {
+          "id": "v5VebqRmrUGONAzB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3-opus",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        64
+      ],
+      "id": "fa92bf26-e5f4-4432-a9f2-7cd204bff07d",
+      "name": "claude",
+      "credentials": {
+        "openRouterApi": {
+          "id": "v5VebqRmrUGONAzB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9ec9c1f4-a153-45e0-890d-4f67116a5ab2",
+              "name": "output",
+              "value": "=# 🧠 Active Trading AI Agent – System Prompt (Simplified v2.1)\n\n## 🕒 Current Context\n**Current Timestamp:** {{ $now }}  \n**Current Weekday:** {{ $now.extract('weekday') }}\n\n---\n\n## 🎯 Role\nYou are an **active trading AI** managing 7 assets:\n'NIFTYBEES', 'GOLDBEES', 'LOWVOLIETF', 'MOMOMENTUM', 'LIQUIDCASE', 'CASH', and 'BTCUSD'.  \nYour goal: **Generate short-term alpha** using technical analysis and disciplined cash management.\n\n---\n\n## 🕐 Market Rules\n\n### **Traditional Assets ('NIFTYBEES', 'GOLDBEES', 'LOWVOLIETF', 'MOMOMENTUM', LIQUIDCASE)**\n- Trade hours: Mon–Fri, 9:15 AM – 3:30 PM IST  \n- **Long only** (no shorting)  \n- Can only SELL to reduce exposure  \n- No weekend or holiday trading  \n- Outside hours: Queue trades for next open  \n- **You Cannot include the above assest in trade decision when the market is closed**\n\n### **Crypto Asset (BTCUSD)**\n- **24/7 trading** (weekends & holidays included)  \n- **Both long and short positions allowed**  \n- Price quoted in **INR (₹)**  \n- **Quantity unit:** 1 qty = 0.001 BTC  \n- **Default leverage:** 10x\n\n#### **BTCUSD Position Sizing Examples**\n\n**Note:** BTCUSD price is quoted in INR. For example, if last price = 10,157,547 INR, then:\n- 1 qty (0.001 BTC) = 10,157,547 × 0.001 = **10,157.55 INR**\n\n**Example 1: 1 Qty (0.001 BTC)**\n- To go long **1 qty BTCUSD without leverage** → Position Value = **₹10,157.55**\n- To go long **1 qty BTCUSD with 10× leverage** → Margin Required = **₹10,157.55 / 10 = ₹1,015.76**\n\n---\n\n**Example 2: 5 Qty (0.005 BTC)**\n- To go long **5 qty BTCUSD without leverage** → Position Value = **₹50,787.75**\n- To go long **5 qty BTCUSD with 10× leverage** → Margin Required = **₹50,787.75 / 10 = ₹5,078.78**\n\n---\n\n**Example 3: 10 Qty (0.01 BTC)**\n- To go long **10 qty BTCUSD without leverage** → Position Value = **₹101,575.50**\n- To go long **10 qty BTCUSD with 10× leverage** → Margin Required = **₹101,575.50 / 10 = ₹10,157.55**\n\n---\n\n**Example 4: Short Position (5 Qty)**\n- To go short **5 qty BTCUSD with 10× leverage** → Margin Required = **₹5,078.78**\n- Short Position Value = **-₹50,787.75** (negative, as it's a short)\n\n---\n\n## Things to Remember When Going Short on Crypto\n\n- **Maximum Short Exposure:**  \n  The total notional value of all open short crypto positions must never exceed the total portfolio value.  \n  Example: If the portfolio value is 9,456, the maximum permissible short exposure is 9,456.\n\n- **BTCUSD Short Limit:**  \n  The negative (short) value of your BTCUSD position cannot exceed the total portfolio value.  \n  If it does, immediately reduce your short exposure to bring it within the allowable limit.\n\n- **Portfolio Monitoring:**  \n  Always track your short exposure relative to total equity to avoid liquidation risk and maintain proper leverage control.\n\n- **Example Calculation:**  \n  If the value of your BTCUSD position is -20,000 and your cash balance is 30,000,  \n  your total portfolio value is 10,000.  \n  According to the rules, the maximum allowable BTCUSD short is -10,000.\n\n- **Managing Liquidity During Short Reduction:**  \n  If you are currently short on BTCUSD and need to buy BTCUSD to reduce exposure but don't have enough available cash during regular market hours,  \n  sell other assets in the Indian markets to generate cash and restore balance.\n\n## 📊 Input Data\n- You receive multi-timeframe OHLC data for all assets:\n  ```\n  [\n    {\n      \"data\": { \"candles\": [[timestamp, open, high, low, close, volume], ...] },\n      \"instrument_token\": \"id\",\n      \"symbol\": \"ASSET_SYMBOL\",\n      \"timeframe\": \"1minute\" or \"15minutes\"\n    }\n  ]\n  ```\n- **1-min** = entry signals, **15-min** = trend direction  \n- **CASH** has no OHLC data  \n- **BTCUSD** data includes 24/7 candles (no market close gaps)\n\n**Inputs:**  \n- {{ $('Aggregate').item.json.data.toJsonString() }}  \n- Current positions: {{ $json.data[1].current_positions.toJsonString() }}\n\nTotal Portfolio Value -> Sum of all value fields in the above list of dict's | all the values in position dict are in INR\n\n- Previous analysis: {{ $json.data[0].model_output_prompt }}\n- Last 5 trades: {{ $json.data[2].previous_trades.toJsonString() }}\n\n---\n\n## ⚙️ Workflow\n\n### 1. Technical Analysis\n- Identify trends (up, down, sideways)  \n- Use indicators: RSI, MACD, EMA(9/21/50), Bollinger Bands, ADX  \n- Confirm setups with volume and candle patterns  \n- Multi-timeframe rule: 15-min = trend filter, 1-min = entry trigger  \n- **For BTCUSD:** Consider 24/7 volatility patterns and leverage risk\n\n### 2. Signal Generation\n- **STRONG BUY** → Both timeframes bullish  \n- **STRONG SELL** → Both timeframes bearish (execute only for BTCUSD)  \n- **HOLD** → Mixed or unclear signals  \n- **For traditional assets:** SELL signals only reduce existing positions  \n- **For BTCUSD:** SELL signals can initiate short positions\n\n### 3. Cash & Portfolio Management\n```\nTotal Portfolio = sum(all positions in INR)\nFree Cash = current CASH value (INR)\nBTCUSD positions calculated as: (qty × price × 0.001)\n```\n- SELL before BUY (except BTCUSD shorts which are independent trades)  \n- Ensure free cash + sell proceeds ≥ buy requirements  \n- **Account for 10x leverage on BTCUSD:** Only 10% of position value needed as margin  \n- Final cash balance ≥ 0  \n\n### 4. Trade Generation\n- SELLs first, then BUYs (for traditional assets)  \n- **BTCUSD:** Can open long or short positions independently  \n- Define target & stop-loss per trade  \n- **BTCUSD quantities:** Must be whole numbers (each qty = 0.001 BTC)  \n- **Traditional assets:** Quantities must be whole numbers  \n- Verify cash sufficiency (remember 10x leverage for BTCUSD reduces margin requirement)  \n\n---\n\n## 📈 Output Format\n\n**You MUST return a valid JSON object with the following structure:**\n\n```json\n{\n  \"technical_analysis_summary\": {\n    \"market_overview\": \"Brief market sentiment description\",\n    \"key_technical_signals\": [\"Array of key signals observed\"],\n    \"timeframe_alignment\": \"Description of 1-min vs 15-min alignment\",\n    \"high_conviction_setups\": [\"List of assets with strongest setups\"],\n    \"risk_events\": [\"Notable risks or concerns\"],\n    \"crypto_sentiment\": \"BTCUSD specific sentiment and volatility notes\"\n  },\n  \"individual_asset_analysis\": [\n    {\n      \"asset\": \"ASSET_NAME\",\n      \"trading_signal\": \"STRONG BUY | BUY | HOLD | SELL | STRONG SELL\",\n      \"conviction_level\": \"HIGH | MEDIUM | LOW\",\n      \"entry_price\": 0.00,\n      \"target_price\": 0.00,\n      \"stop_loss_price\": 0.00,\n      \"risk_reward_ratio\": 0.0,\n      \"technical_rationale\": \"Specific technical reasoning for this asset\",\n      \"direction\": \"LONG | SHORT (only for BTCUSD)\"\n    }\n  ],\n  \"rebalancing_decision\": \"HOLD | REBALANCE\",\n  \"allocation\": {\n    \"recommended_allocation\": {\n      \"NIFTYBEES\": 0,\n      \"GOLDBEES\": 0,\n      \"LOWVOLIETF\": 0,\n      \"MOMOMENTUM\": 0,\n      \"LIQUIDCASE\": 0,\n      \"BTCUSD\": 0,\n      \"CASH\": 0\n    },\n    \"allocation_by_value\": {\n      \"NIFTYBEES\": 0,\n      \"GOLDBEES\": 0,\n      \"LOWVOLIETF\": 0,\n      \"MOMOMENTUM\": 0,\n      \"LIQUIDCASE\": 0,\n      \"BTCUSD\": 0,\n      \"CASH\": 0\n    },\n    \"total_portfolio_value\": 0,\n    \"cash_allocation\": 0,\n    \"position_rationale\": \"Explanation of allocation decisions\",\n    \"cash_management_summary\": {\n      \"initial_free_cash_value\": 0,\n      \"cash_freed_from_sells_value\": 0,\n      \"cash_required_for_buys_value\": 0,\n      \"final_cash_balance_value\": 0,\n      \"cash_sufficiency_verified\": true\n    }\n  },\n  \"trade_decisions\": [\n    {\n      \"id\": \"1\",\n      \"asset\": \"ASSET_NAME\",\n      \"action\": \"BUY | SELL\",\n      \"quantity\": 0,\n      \"current_price\": 0.00,\n      \"estimated_value\": 0.00,\n      \"target_price\": 0.00,\n      \"stop_loss_price\": 0.00,\n      \"risk_reward_ratio\": 0.0,\n      \"technical_setup\": \"Brief setup description\",\n      \"quantity_logic\": \"logic for selecting  the quantity\"\n    }\n  ],\n  \"trade_monitoring\": {\n    \"active_positions\": [\"List of currently held assets\"],\n    \"previous_targets_hit\": [\"Trades that hit targets\"],\n    \"previous_stops_hit\": [\"Trades that hit stops\"],\n    \"position_adjustments\": \"Trailing stops or adjustments needed\"\n  },\n  \"trade_performance_analysis\": {\n    \"trades_reviewed\": 0,\n    \"recent_activity_summary\": \"Summary of last 5 trades performance\",\n    \"estimated_pnl_from_history\": \"+X.X% or -X.X%\",\n    \"trading_pattern_insights\": \"What's working, what's not\",\n    \"positions_to_reconsider\": [\"Assets to potentially exit or adjust\"]\n  },\n  \"justification\": \"Comprehensive explanation covering: technical reasoning for each trade, cash flow validation (SELLs before BUYs), final cash balance verification, leverage impact for BTCUSD, and overall strategy rationale\"\n}\n```\n---\n\n## ⚖️ Principles\n- Be **active**, not passive — take calculated trades  \n- Trade **with trend**, not against it  \n- Always define **target and stop-loss**  \n- Maintain **positive cash balance**  \n- Follow **SELL → BUY** sequence for traditional assets  \n- **BTCUSD:** Can short aggressively in downtrends, long in uptrends  \n- **Leverage awareness:** 10x leverage on BTCUSD amplifies both gains and losses  \n- Use **tighter stops on BTCUSD** due to 24/7 volatility and leverage  \n- Minimize idle CASH; deploy into opportunities  \n- Never let the Value of CASH go to Negative and CASH can never exceed 200% in current position, if it does reduse BTCUSD short Exposure\n- Never let the -ve value of BTCUSD go more than the absolute value of (Total portfolio value)\n\n✅ **Good Behavior:** Frequent trades, stops honored, trailing profits, cash < 20%, smart leverage use on BTCUSD  \n❌ **Bad Behavior:** Hoarding cash, ignoring signals, buying before selling (traditional assets), no stops, over-leveraging BTCUSD  \n\n---\n\n## ✅ Final Checks\n- [ ] Reviewed recent trades & performance  \n- [ ] Analyzed both 1-min & 15-min charts (including 24/7 BTCUSD data)  \n- [ ] Defined entry, target, stop-loss (tighter stops for leveraged BTCUSD)  \n- [ ] Verified cash sufficiency (accounting for 10x leverage on BTCUSD)  \n- [ ] Check if the market is open for the particular assest, if closed, go back and reasses the allocation\n- [ ] SELLs listed before BUYs (traditional assets)  \n- [ ] BTCUSD positions marked as LONG or SHORT  \n- [ ] All the quantites must be an integer, decimal places are not allowed\n- [ ] Final cash ≥ 0  \n- [ ] Allocations sum = 100% (leveraged exposure counted)  \n\n**Mission:** Trade actively across traditional and crypto markets, manage cash smartly, use leverage responsibly, and generate alpha 24/7.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        -64
+      ],
+      "id": "790a5cab-8d2d-4454-bcb4-fede6d3e2542",
+      "name": "PreprocessedDataLLM",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ac34b8d0-aacd-4c25-8325-063c57cc1346",
+              "name": "output",
+              "value": "={{ $json }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2336,
+        -112
+      ],
+      "id": "7a369288-744e-47cd-85fe-bbfa30f093de",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d6efda69-a462-4d5e-9cbc-9d4de9da6572",
+              "name": "model_output_prompt",
+              "value": "={{ $('Edit Fields').item.json.output.parseJson().output.trade_decisions }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3008,
+        -112
+      ],
+      "id": "362a1476-f806-4d5f-8955-041bf10cfa7d",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.alphaarena.in/api/v1/models/create_trade",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "code_name",
+              "value": "={{ $('Webhook').item.json.body.ai_model }}"
+            },
+            {
+              "name": "asset",
+              "value": "={{ $('Loop Over Items').item.json.asset }}"
+            },
+            {
+              "name": "side",
+              "value": "={{ $('Loop Over Items').item.json.action }}"
+            },
+            {
+              "name": "quantity",
+              "value": "={{ $('Loop Over Items').item.json.quantity }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3680,
+        -16
+      ],
+      "id": "0dea1834-fd91-436d-99e6-9d61e909512d",
+      "name": "Adding Trades",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d363ea9d-0680-425f-aecf-7d1e3fcf7890",
+              "name": "data.candles",
+              "value": "={{ $json.candles }}",
+              "type": "array"
+            },
+            {
+              "id": "09343626-6dba-459b-95f2-45e01a69aa92",
+              "name": "symbol",
+              "value": "BTCUSD",
+              "type": "string"
+            },
+            {
+              "id": "b5e88749-7c6f-430b-a917-e31cda8a83a7",
+              "name": "timeframe",
+              "value": "15minutes",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        48
+      ],
+      "id": "0e918099-2e0a-4bf7-8ce3-37c6688dfcb9",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d363ea9d-0680-425f-aecf-7d1e3fcf7890",
+              "name": "data.candles",
+              "value": "={{ $json.candles }}",
+              "type": "array"
+            },
+            {
+              "id": "09343626-6dba-459b-95f2-45e01a69aa92",
+              "name": "symbol",
+              "value": "=BTCUSD",
+              "type": "string"
+            },
+            {
+              "id": "b5e88749-7c6f-430b-a917-e31cda8a83a7",
+              "name": "timeframe",
+              "value": "60minutes",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        240
+      ],
+      "id": "5d795355-a147-4f58-bb2b-583797d7e5e8",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "url": "https://api.alphaarena.in/api/v1/models/get_all_model_chat",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "1"
+            },
+            {
+              "name": "order_by",
+              "value": "last_update_time"
+            },
+            {
+              "name": "order_direction",
+              "value": "desc"
+            },
+            {
+              "name": "code_name",
+              "value": "={{ $('Webhook').item.json.body.ai_model }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        496,
+        -256
+      ],
+      "id": "5e855def-76da-4bd6-977b-819c483b8998",
+      "name": "Get Previous Chats",
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "url": "=https://api.alphaarena.in/api/v1/models/get_all_positions?code_name={{ $('Webhook').item.json.body.ai_model }}&order_by=last_updated&order_direction=desc",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        496,
+        -64
+      ],
+      "id": "fb7c5243-15c1-49a0-9386-62aa115963b1",
+      "name": "Get Current Positions",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        464
+      ],
+      "id": "705f52f1-3a6a-45e7-ba75-0500bc0043e3",
+      "name": "xai",
+      "credentials": {
+        "openRouterApi": {
+          "id": "v5VebqRmrUGONAzB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3-max",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        976
+      ],
+      "id": "28e3ab77-d74f-4033-9867-16a43aa31757",
+      "name": "qwen",
+      "credentials": {
+        "openRouterApi": {
+          "id": "v5VebqRmrUGONAzB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.alphaarena.in/api/v1/models/get_all_trades",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "code_name",
+              "value": "={{ $('Webhook').item.json.body.ai_model }}"
+            },
+            {
+              "name": "limit",
+              "value": "5"
+            },
+            {
+              "name": "order_by",
+              "value": "last_update_time"
+            },
+            {
+              "name": "order_direction",
+              "value": "desc"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        496,
+        144
+      ],
+      "id": "ef1b9623-5889-4dad-b4b6-a3546bbad986",
+      "name": "Get Previous Trades",
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        944,
+        -80
+      ],
+      "id": "d55adb49-9bb7-4b90-819b-c0ed9283a7d5",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"technical_analysis_summary\": {\n    \"market_overview\": \"Brief market sentiment description\",\n    \"key_technical_signals\": [\"Array of key signals observed\"],\n    \"timeframe_alignment\": \"Description of 1-min vs 15-min alignment\",\n    \"high_conviction_setups\": [\"List of assets with strongest setups\"],\n    \"risk_events\": [\"Notable risks or concerns\"],\n    \"crypto_sentiment\": \"BTCUSD specific sentiment and volatility notes\"\n  },\n  \"individual_asset_analysis\": [\n    {\n      \"asset\": \"ASSET_NAME\",\n      \"trading_signal\": \"STRONG BUY | BUY | HOLD | SELL | STRONG SELL\",\n      \"conviction_level\": \"HIGH | MEDIUM | LOW\",\n      \"entry_price\": 0.00,\n      \"target_price\": 0.00,\n      \"stop_loss_price\": 0.00,\n      \"risk_reward_ratio\": 0.0,\n      \"technical_rationale\": \"Specific technical reasoning for this asset\",\n      \"direction\": \"LONG | SHORT (only for BTCUSD)\"\n    }\n  ],\n  \"rebalancing_decision\": \"HOLD | REBALANCE\",\n  \"allocation\": {\n    \"recommended_allocation\": {\n      \"NIFTYBEES\": 0,\n      \"GOLDBEES\": 0,\n      \"LOWVOLIETF\": 0,\n      \"MOMOMENTUM\": 0,\n      \"LIQUIDCASE\": 0,\n      \"BTCUSD\": 0,\n      \"CASH\": 0\n    },\n    \"allocation_by_value\": {\n      \"NIFTYBEES\": 0,\n      \"GOLDBEES\": 0,\n      \"LOWVOLIETF\": 0,\n      \"MOMOMENTUM\": 0,\n      \"LIQUIDCASE\": 0,\n      \"BTCUSD\": 0,\n      \"CASH\": 0\n    },\n    \"total_portfolio_value\": 0,\n    \"cash_allocation\": 0,\n    \"position_rationale\": \"Explanation of allocation decisions\",\n    \"cash_management_summary\": {\n      \"initial_free_cash_value\": 0,\n      \"cash_freed_from_sells_value\": 0,\n      \"cash_required_for_buys_value\": 0,\n      \"final_cash_balance_value\": 0,\n      \"cash_sufficiency_verified\": true\n    }\n  },\n  \"trade_decisions\": [\n    {\n      \"id\": \"1\",\n      \"asset\": \"ASSET_NAME\",\n      \"action\": \"BUY | SELL\",\n      \"quantity\": 0,\n      \"current_price\": 0.00,\n      \"estimated_value\": 0.00,\n      \"target_price\": 0.00,\n      \"stop_loss_price\": 0.00,\n      \"risk_reward_ratio\": 0.0,\n      \"technical_setup\": \"Brief setup description\",\n      \"quantity_logic\": \"logic for selecting  the quantity\"\n    }\n  ],\n  \"trade_monitoring\": {\n    \"active_positions\": [\"List of currently held assets\"],\n    \"previous_targets_hit\": [\"Trades that hit targets\"],\n    \"previous_stops_hit\": [\"Trades that hit stops\"],\n    \"position_adjustments\": \"Trailing stops or adjustments needed\"\n  },\n  \"trade_performance_analysis\": {\n    \"trades_reviewed\": 0,\n    \"recent_activity_summary\": \"Summary of last 5 trades performance\",\n    \"estimated_pnl_from_history\": \"+X.X% or -X.X%\",\n    \"trading_pattern_insights\": \"What's working, what's not\",\n    \"positions_to_reconsider\": [\"Assets to potentially exit or adjust\"]\n  },\n  \"justification\": \"Comprehensive explanation covering: technical reasoning for each trade, cash flow validation (SELLs before BUYs), final cash balance verification, leverage impact for BTCUSD, and overall strategy rationale\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1968,
+        -944
+      ],
+      "id": "56d981d4-c33d-4cd9-8853-ed04575c2ae2",
+      "name": "Structured Output Parser6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.toJsonString() }}",
+        "hasOutputParser": true,
+        "options": {
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        752
+      ],
+      "id": "7a3d4648-985c-4962-a5aa-249f9c29d472",
+      "name": "Qwen 3 Max",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.toJsonString() }}",
+        "hasOutputParser": true,
+        "options": {
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        240
+      ],
+      "id": "2b27a1af-c500-457f-b851-62d27609cba8",
+      "name": "Grok 4",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.toJsonString() }}",
+        "hasOutputParser": true,
+        "options": {
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        -160
+      ],
+      "id": "073c8086-63aa-4cec-87fb-10f3bcf23695",
+      "name": "Claude",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.toJsonString() }}",
+        "hasOutputParser": true,
+        "options": {
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1872,
+        -1168
+      ],
+      "id": "696006d8-bea7-4f53-a048-a8e94becd2d3",
+      "name": "Chatgpt 5",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "current_positions",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        720,
+        -64
+      ],
+      "id": "98b9d219-7294-444f-9be1-4b080672296e",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "previous_trades",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        720,
+        144
+      ],
+      "id": "630a7b6f-5cf2-4f78-9fb2-23760e6d0e23",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        -64
+      ],
+      "id": "fe47a5cf-c88d-4025-9d21-fe6ae93c65db",
+      "name": "Aggregate4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26f2034e-cf00-43e8-aeeb-05e85a5b86e6",
+              "name": "model_output_prompt",
+              "value": "={{ $json.model_output_prompt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        -256
+      ],
+      "id": "02db7267-3d38-490f-8ed6-8c26ca711378",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1920,
+        -560
+      ],
+      "id": "f313c52c-2dea-4b1a-90be-38f0342b0c1c",
+      "name": "Deepseek"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "output = []\nfactor = 89\nfor ohlc in _input.first().json.result:\n  inr_ohlc = {\n    k: (v * factor if k not in ('time', 'volume') else v)\n    for k,v in ohlc.items()\n  } \n  output.append(inr_ohlc)\n\n\nreturn [{'candles': output}]\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        48
+      ],
+      "id": "b4a8ae0a-4f60-4104-b2dd-dadedc67417a",
+      "name": "Code in Python (Beta)1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "output = []\nfactor = 89\nfor ohlc in _input.first().json.result:\n  inr_ohlc = {\n    k: (v * factor if k not in ('time', 'volume') else v)\n    for k,v in ohlc.items()\n  } \n  output.append(inr_ohlc)\n\n\nreturn [{'candles': output}]\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        240
+      ],
+      "id": "0ae0dd51-245f-42a4-9402-b40e3f08452f",
+      "name": "Code in Python (Beta)2"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kite.trade/instruments/historical/{{ $json.instrument_token }}/15minute?to={{ $now.format('yyyy-MM-dd+HH:mm:00') }}&from={{ $now.minus(2,'days').format('yyyy-MM-dd+HH:mm:00') }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        -352
+      ],
+      "id": "dcca97d2-7dd0-433e-8d97-b7687ae7a850",
+      "name": "Zeordha 15 Minutes",
+      "retryOnFail": false,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "QgFA0MmOAoeZB7Za",
+          "name": "sex"
+        },
+        "httpCustomAuth": {
+          "id": "UjVtDvDJ81rgjSuE",
+          "name": "zerodha"
+        },
+        "httpHeaderAuth": {
+          "id": "zJWikiObf8q0m82Z",
+          "name": "Zerodha D"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kite.trade/instruments/historical/{{ $json.instrument_token }}/60minute?to={{ $now.format('yyyy-MM-dd+HH:mm:00') }}&from={{ $now.minus(4,'day').format('yyyy-MM-dd+HH:mm:00') }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        -160
+      ],
+      "id": "f78c4b46-8e72-48bd-b2f9-6e2605ae0cd5",
+      "name": "Zerodha 60 Min",
+      "retryOnFail": false,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "QgFA0MmOAoeZB7Za",
+          "name": "sex"
+        },
+        "httpCustomAuth": {
+          "id": "UjVtDvDJ81rgjSuE",
+          "name": "zerodha"
+        },
+        "httpHeaderAuth": {
+          "id": "zJWikiObf8q0m82Z",
+          "name": "Zerodha D"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.india.delta.exchange/v2/history/candles",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "resolution",
+              "value": "15m"
+            },
+            {
+              "name": "symbol",
+              "value": "BTCUSD"
+            },
+            {
+              "name": "start",
+              "value": "={{ $now.minus(1,'days').toMillis()/1000 }}"
+            },
+            {
+              "name": "end",
+              "value": "={{ $now.toMillis()/1000 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        48
+      ],
+      "id": "287c658b-d06a-4486-b38d-f6cff44c6b6e",
+      "name": "BTCUSD 15 Min",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.india.delta.exchange/v2/history/candles",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "resolution",
+              "value": "1h"
+            },
+            {
+              "name": "symbol",
+              "value": "BTCUSD"
+            },
+            {
+              "name": "start",
+              "value": "={{ $now.minus(4,'days').toMillis()/1000 }}"
+            },
+            {
+              "name": "end",
+              "value": "={{ $now.toMillis()/1000 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        240
+      ],
+      "id": "7067ac90-6d9a-4753-bc34-ca9c0150610c",
+      "name": "BTCUSD 60min",
+      "executeOnce": true
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "Zeordha 15 Minutes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Zerodha 60 Min",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BTCUSD 15 Min",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BTCUSD 60min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Chatgpt 5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Deepseek",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Claude",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Grok 4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Qwen 3 Max",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Chatgpt 5",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser6",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Get Previous Chats",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Current Positions",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Previous Trades",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Adding Trades",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deepseek": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Deepseek",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "claude": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Claude",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PreprocessedDataLLM": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adding Trades": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Get Previous Chats": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current Positions": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "xai": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Grok 4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "qwen": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Qwen 3 Max",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Previous Trades": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser6": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Chatgpt 5",
+            "type": "ai_outputParser",
+            "index": 0
+          },
+          {
+            "node": "Claude",
+            "type": "ai_outputParser",
+            "index": 0
+          },
+          {
+            "node": "Grok 4",
+            "type": "ai_outputParser",
+            "index": 0
+          },
+          {
+            "node": "Qwen 3 Max",
+            "type": "ai_outputParser",
+            "index": 0
+          },
+          {
+            "node": "Deepseek",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qwen 3 Max": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Grok 4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chatgpt 5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Aggregate4": {
+      "main": [
+        [
+          {
+            "node": "PreprocessedDataLLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deepseek": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zeordha 15 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zerodha 60 Min": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BTCUSD 15 Min": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BTCUSD 60min": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "headers": {
+          "host": "n8n.blackrose.cloud",
+          "user-agent": "python-requests/2.32.5",
+          "content-length": "297",
+          "accept": "*/*",
+          "accept-encoding": "gzip, deflate",
+          "authorization": "Basic ZGhhbnVzaDpzZXhpbmFzc0A2OTY5",
+          "content-type": "application/json",
+          "x-forwarded-for": "91.203.135.29",
+          "x-forwarded-host": "n8n.blackrose.cloud",
+          "x-forwarded-port": "443",
+          "x-forwarded-proto": "https",
+          "x-forwarded-server": "srv1019412",
+          "x-real-ip": "91.203.135.29"
+        },
+        "params": {},
+        "query": {},
+        "body": {
+          "token": "loUYz7TjGyaWQ36Nj6fp0L7rNPF3ioLH",
+          "ai_model": "claude_v4.5",
+          "symbols": [
+            "BTCUSD",
+            "GOLDBEES",
+            "MOMOMENTUM",
+            "LOWVOLIETF",
+            "LIQUIDCASE",
+            "NIFTYBEES"
+          ],
+          "mapping": {
+            "2094593": "MOMOMENTUM",
+            "2707457": "NIFTYBEES",
+            "3693569": "GOLDBEES",
+            "5441025": "LOWVOLIETF",
+            "5568001": "LIQUIDCASE"
+          }
+        },
+        "webhookUrl": "https://n8n.blackrose.cloud/webhook/alpha-arena",
+        "executionMode": "production"
+      }
+    ]
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d00205c8498baa65c38cd21746b2ff097cef10f6b154e54738e0e540fadc6683"
+  }
+}
